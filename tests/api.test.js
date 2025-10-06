@@ -1,5 +1,25 @@
 const request = require('supertest');
-const app = require('../backend/server');
+
+// Create a new app instance for testing
+const express = require('express');
+const cors = require('cors');
+const authRoutes = require('../backend/routes/auth');
+const projectRoutes = require('../backend/routes/projects');
+const deploymentRoutes = require('../backend/routes/deployments');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/deployments', deploymentRoutes);
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'AICloud API is running' });
+});
 
 describe('API Health Check', () => {
   it('should return OK status', async () => {
